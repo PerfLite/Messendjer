@@ -935,6 +935,7 @@
     }
 
     async function api(path, options = {}, isPost = false) {
+      console.log('API call:', path);
       const headers = { 
         'Accept': 'application/vnd.github+json', 
         'X-GitHub-Api-Version': '2022-11-28',
@@ -946,8 +947,10 @@
         headers,
         ...(isPost ? { body: options.body } : {})
       });
+      console.log('API response:', res.status);
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
+        console.error('API error:', err);
         throw new Error(err.message || `HTTP ${res.status}`);
       }
       return res.json();
@@ -958,6 +961,8 @@
       currentUser = usernameInput.value.trim();
       token = tokenInput.value.trim();
       
+      console.log('saveAndLoad:', currentRepo, currentUser);
+      
       if (!currentRepo) { alert('Введите репозиторий'); return; }
       if (!currentUser) { alert('Введите username'); return; }
 
@@ -965,7 +970,9 @@
       localStorage.setItem(USER_KEY, currentUser);
       if (token) localStorage.setItem(TOKEN_KEY, token);
       
-      closeConfig();
+      messagesDiv.innerHTML = '<div class="loading">Подключение...</div>';
+      document.getElementById('configModal').classList.add('hidden');
+      document.getElementById('configModal').style.display = 'none';
       await loadMessages();
     }
 
