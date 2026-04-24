@@ -195,6 +195,133 @@
       background: #e5e5e5;
     }
     
+    .profile-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #5181b8, #285689);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      transition: transform 0.2s;
+    }
+    
+    .profile-btn:hover {
+      transform: scale(1.1);
+    }
+    
+    .profile-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .profile-modal.hidden {
+      display: none;
+    }
+    
+    .profile-card {
+      background: #fff;
+      border-radius: 16px;
+      width: 320px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    
+    .profile-banner {
+      height: 80px;
+      background: linear-gradient(135deg, #5181b8, #764ba2);
+    }
+    
+    .profile-content {
+      padding: 20px;
+      text-align: center;
+      margin-top: -40px;
+    }
+    
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #5181b8, #285689);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 32px;
+      font-weight: 600;
+      margin: 0 auto 12px;
+      border: 3px solid #fff;
+    }
+    
+    .profile-name {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    
+    .profile-login {
+      font-size: 14px;
+      color: #5181b8;
+      margin-bottom: 12px;
+    }
+    
+    .profile-bio {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 16px;
+      padding: 0 10px;
+    }
+    
+    .profile-stats {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      padding: 12px 0;
+      border-top: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 16px;
+    }
+    
+    .profile-stat {
+      text-align: center;
+    }
+    
+    .profile-stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #000;
+    }
+    
+    .profile-stat-label {
+      font-size: 12px;
+      color: #999;
+    }
+    
+    .profile-link {
+      display: block;
+      background: #5181b8;
+      color: #fff;
+      text-decoration: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    
+    .profile-link:hover {
+      background: #285689;
+    }
+    
     /* Messages */
     .messages {
       flex: 1;
@@ -453,6 +580,7 @@
         </div>
         <div class="chat-header-actions">
           <button class="icon-btn">🔍</button>
+          <button class="profile-btn" id="profileBtn" onclick="showProfile()">👤</button>
           <button class="icon-btn" onclick="openConfig()">⚙️</button>
         </div>
       </div>
@@ -492,6 +620,35 @@
       <button class="modal-btn" onclick="saveAndLoad()">Подключиться</button>
     </div>
   </div>
+  
+  <!-- Profile Modal -->
+  <div class="profile-modal hidden" id="profileModal" onclick="closeProfile(event)">
+    <div class="profile-card" onclick="event.stopPropagation()">
+      <div class="profile-banner"></div>
+      <div class="profile-content">
+        <div class="profile-avatar" id="profileAvatar">U</div>
+        <div class="profile-name" id="profileName">Загрузка...</div>
+        <div class="profile-login" id="profileLogin">@username</div>
+        <div class="profile-bio" id="profileBio"></div>
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <div class="profile-stat-value" id="profileFollowers">0</div>
+            <div class="profile-stat-label">Подписчики</div>
+          </div>
+          <div class="profile-stat">
+            <div class="profile-stat-value" id="profileFollowing">0</div>
+            <div class="profile-stat-label">Подписки</div>
+          </div>
+          <div class="profile-stat">
+            <div class="profile-stat-value" id="profileRepos">0</div>
+            <div class="profile-stat-label">Репозитории</div>
+          </div>
+        </div>
+        <a class="profile-link" id="profileLink" href="#" target="_blank">Открыть на GitHub</a>
+        <button class="modal-btn" onclick="closeProfile()">Закрыть</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     const REPO_KEY = 'ghm_repo';
@@ -528,8 +685,10 @@
       document.getElementById('configModal').classList.remove('hidden');
     }
 
-    function closeConfig() {
-      document.getElementById('configModal').classList.add('hidden');
+    function closeConfig(e) {
+      if (!e || e.target.id === 'configModal') {
+        document.getElementById('configModal').classList.add('hidden');
+      }
     }
 
     async function api(path, options = {}, isPost = false) {
@@ -725,6 +884,28 @@
         renderChatList(filtered);
       }
     });
+
+    async function showProfile() {
+      if (!currentUser) return alert('Введите username в настройках');
+      document.getElementById('profileModal').classList.remove('hidden');
+      
+      const profile = await api(`/users/${currentUser}`);
+      
+      document.getElementById('profileAvatar').textContent = profile.login.charAt(0).toUpperCase();
+      document.getElementById('profileName').textContent = profile.name || profile.login;
+      document.getElementById('profileLogin').textContent = '@' + profile.login;
+      document.getElementById('profileBio').textContent = profile.bio || '';
+      document.getElementById('profileFollowers').textContent = profile.followers || 0;
+      document.getElementById('profileFollowing').textContent = profile.following || 0;
+      document.getElementById('profileRepos').textContent = profile.public_repos || 0;
+      document.getElementById('profileLink').href = profile.html_url;
+    }
+
+    function closeProfile(e) {
+      if (!e || e.target.id === 'profileModal') {
+        document.getElementById('profileModal').classList.add('hidden');
+      }
+    }
   </script>
 </body>
 </html>
