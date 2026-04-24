@@ -1191,6 +1191,12 @@
       closeProfile();
       document.getElementById('messageInput').focus();
     }
+
+    function closeProfile(e) {
+      if (!e || e.target.id === 'profileModal') {
+        document.getElementById('profileModal').classList.add('hidden');
+      }
+    }
   </script>
 </body>
 </html>
