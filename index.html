@@ -711,10 +711,15 @@
       font-weight: 600;
       cursor: pointer;
       margin-top: 10px;
+      display: block;
     }
     
     .modal-btn:hover {
       background: #285689;
+    }
+    
+    .modal-btn:active {
+      transform: scale(0.98);
     }
     
     /* Loading */
@@ -914,14 +919,16 @@
     const currentChatName = document.getElementById('currentChatName');
     const currentStatus = document.getElementById('currentStatus');
 
-    repoInput.value = localStorage.getItem(REPO_KEY) || '';
-    usernameInput.value = localStorage.getItem(USER_KEY) || '';
-    tokenInput.value = localStorage.getItem(TOKEN_KEY) || '';
+    const savedRepo = localStorage.getItem(REPO_KEY);
+    const savedUser = localStorage.getItem(USER_KEY);
+    const savedToken = localStorage.getItem(TOKEN_KEY);
+    
+    if (savedRepo) document.getElementById('modalRepo').value = savedRepo;
+    if (savedUser) document.getElementById('modalUsername').value = savedUser;
+    if (savedToken) document.getElementById('modalToken').value = savedToken;
 
-    if (repoInput.value && usernameInput.value) {
-      loadMessages();
-    } else {
-      openConfig();
+    if (savedRepo && savedUser) {
+      saveAndLoad();
     }
 
     function openConfig() {
@@ -957,36 +964,31 @@
     }
 
     async function saveAndLoad() {
-      currentRepo = repoInput.value.trim();
-      currentUser = usernameInput.value.trim();
-      token = tokenInput.value.trim();
+      const repo = document.getElementById('modalRepo').value.trim();
+      const user = document.getElementById('modalUsername').value.trim();
+      const tok = document.getElementById('modalToken').value.trim();
       
-      console.log('saveAndLoad:', currentRepo, currentUser);
-      
-      if (!currentRepo) { alert('Введите репозиторий'); return; }
-      if (!currentUser) { alert('Введите username'); return; }
+      if (!repo) { alert('Введите репозиторий (например PerfLite/Messendjer)'); return; }
+      if (!user) { alert('Введите username GitHub'); return; }
 
-      localStorage.setItem(REPO_KEY, currentRepo);
-      localStorage.setItem(USER_KEY, currentUser);
-      if (token) localStorage.setItem(TOKEN_KEY, token);
+      currentRepo = repo;
+      currentUser = user;
+      token = tok;
+
+      localStorage.setItem(REPO_KEY, repo);
+      localStorage.setItem(USER_KEY, user);
+      if (tok) localStorage.setItem(TOKEN_KEY, tok);
       
-      messagesDiv.innerHTML = '<div class="loading">Подключение...</div>';
-      document.getElementById('configModal').classList.add('hidden');
       document.getElementById('configModal').style.display = 'none';
-      await loadMessages();
-    }
-
-    async function loadMessages() {
-      messagesDiv.innerHTML = '<div class="loading">Загрузка сообщений</div>';
-      sendBtn.disabled = true;
-
+      messagesDiv.innerHTML = '<div class="loading">Подключение к ' + repo + '...</div>';
+      
       try {
-        const issues = await api(`/repos/${currentRepo}/issues?labels=${LABEL}&state=open&per_page=100&sort=created&direction=asc`);
+        const issues = await api(`/repos/${repo}/issues?labels=${LABEL}&state=open&per_page=100&sort=created&direction=asc`);
         allMessages = issues;
         
-        currentAvatar.textContent = currentUser.charAt(0).toUpperCase();
-        currentChatName.textContent = `${currentRepo}`;
-        currentStatus.textContent = `${issues.length} сообщений`;
+        currentAvatar.textContent = user.charAt(0).toUpperCase();
+        currentChatName.textContent = repo;
+        currentStatus.textContent = issues.length + ' сообщений';
         msgCount.textContent = issues.length;
         
         renderChatList(issues);
@@ -995,7 +997,7 @@
         lastUpdate = issues.length;
         
         setInterval(async () => {
-          const fresh = await api(`/repos/${currentRepo}/issues?labels=${LABEL}&state=open&per_page=100&sort=created&direction=asc`);
+          const fresh = await api(`/repos/${repo}/issues?labels=${LABEL}&state=open&per_page=100&sort=created&direction=asc`);
           if (fresh.length !== lastUpdate) {
             allMessages = fresh;
             msgCount.textContent = fresh.length;
@@ -1005,8 +1007,8 @@
           }
         }, 10000);
       } catch (e) {
-        messagesDiv.innerHTML = `<div class="loading" style="color:#ff4444">Ошибка: ${e.message}</div>`;
-        openConfig();
+        messagesDiv.innerHTML = '<div class="loading" style="color:#ff4444">Ошибка: ' + e.message + '</div>';
+        document.getElementById('configModal').style.display = 'flex';
       }
     }
 
