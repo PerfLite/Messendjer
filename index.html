@@ -920,6 +920,8 @@
 
     if (repoInput.value && usernameInput.value) {
       loadMessages();
+    } else {
+      openConfig();
     }
 
     function openConfig() {
@@ -997,6 +999,7 @@
         }, 10000);
       } catch (e) {
         messagesDiv.innerHTML = `<div class="loading" style="color:#ff4444">Ошибка: ${e.message}</div>`;
+        openConfig();
       }
     }
 
