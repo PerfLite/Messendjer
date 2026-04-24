@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Messendjer</title>
+  <title>Messendger</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
@@ -532,10 +532,18 @@
       document.getElementById('configModal').classList.add('hidden');
     }
 
-    async function api(path, options = {}) {
-      const headers = { 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' };
+    async function api(path, options = {}, isPost = false) {
+      const headers = { 
+        'Accept': 'application/vnd.github+json', 
+        'X-GitHub-Api-Version': '2022-11-28',
+        'Content-Type': 'application/json'
+      };
       if (token) headers['Authorization'] = `Bearer ${token}`;
-      const res = await fetch(`https://api.github.com${path}`, { ...options, headers });
+      const res = await fetch(`https://api.github.com${path}`, { 
+        method: options.method || 'GET', 
+        headers,
+        ...(isPost ? { body: options.body } : {})
+      });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.message || `HTTP ${res.status}`);
@@ -687,7 +695,7 @@
         await api(`/repos/${currentRepo}/issues`, {
           method: 'POST',
           body: JSON.stringify({ title: `${currentUser}: ${Date.now()}`, body, labels: [LABEL] })
-        });
+        }, true);
         document.getElementById('messageInput').value = '';
         lastUpdate = 0;
         await loadMessages();
