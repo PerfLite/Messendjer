@@ -224,6 +224,15 @@
       font-size: 16px;
     }
     
+    .news-domain {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+    
+    .news-image img { transition: opacity 0.3s; }
+    .news-image img:hover { opacity: 0.9; }
+    
     @media (max-width: 600px) {
       .header-nav { display: none; }
       .hero h1 { font-size: 24px; }
@@ -322,21 +331,28 @@
             if (!filter && !isGame && !isAI && story.score < 100) return;
             
             count++;
-            if (count > 24) return;
+            if (count > 20) return;
             
             const tag = isGame ? '🎮 Игры' : isAI ? '🤖 AI' : '📰';
             const cls = isGame ? 'game' : isAI ? 'ai' : 'default';
             const icon = isGame ? '🎮' : isAI ? '🤖' : '📰';
+            const domain = new URL(story.url).hostname.replace('www.', '');
             
             const card = document.createElement('div');
             card.className = 'news-card';
             card.onclick = () => window.open(story.url, '_blank');
             card.innerHTML = `
-              <div class="news-image ${cls}">${icon}</div>
+              <div class="news-image ${cls}" style="background: linear-gradient(135deg, ${getGradient(domain)}, ${getGradient(domain + '2'});">
+                <img src="https://image.thum.io/get/width/400/crop/300/${encodeURIComponent(story.url)}" 
+                     style="width:100%;height:100%;object-fit:cover;" 
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+                     loading="lazy">
+                <span style="display:none;font-size:32px;">${icon}</span>
+              </div>
               <div class="news-content">
                 <div class="news-tag ${cls}">${tag}</div>
                 <div class="news-title">${title}</div>
-                <div class="news-excerpt">${(story.text || '').replace(/<[^>]*>/g, '').substring(0, 100) || story.url}...</div>
+                <div class="news-domain">${domain}</div>
                 <div class="news-meta">
                   <span>⬆️ ${story.score}</span>
                   <span>💬 ${story.descendants || 0}</span>
@@ -350,6 +366,18 @@
       } catch (e) {
         grid.innerHTML = '<div class="loading" style="color:#f00">❌ Ошибка: ' + e.message + '</div>';
       }
+    }
+
+    function getGradient(seed) {
+      const gradients = [
+        '#667eea, #764ba2', '#f093fb, #f5576c', '#4facfe, #00f2fe',
+        '#43e97b, #38f9d7', '#fa709a, #fee140', '#a18cd1, #fbc2eb',
+        '#ff9a9e, #fecfef', '#ffecd2, #fcb69f', '#667eea, #764ba2',
+        '#e94560, #c23a51', '#0f3460, #16213e', '#f5af19, #f12711'
+      ];
+      let hash = 0;
+      for (let i = 0; i < seed.length; i++) hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+      return gradients[Math.abs(hash) % gradients.length];
     }
 
     loadNews(null);
