@@ -218,108 +218,306 @@
     .profile-modal {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.4);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 1000;
+      padding: 20px;
     }
     
     .profile-modal.hidden {
       display: none;
     }
     
-    .profile-card {
+    .profile-page {
       background: #fff;
-      border-radius: 16px;
-      width: 320px;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 800px;
       overflow: hidden;
       box-shadow: 0 10px 40px rgba(0,0,0,0.2);
     }
     
-    .profile-banner {
-      height: 80px;
-      background: linear-gradient(135deg, #5181b8, #764ba2);
+    .profile-cover {
+      height: 200px;
+      background: linear-gradient(135deg, #1c3d5a 0%, #4a6fa5 50%, #7b9acc 100%);
+      position: relative;
     }
     
-    .profile-content {
-      padding: 20px;
-      text-align: center;
-      margin-top: -40px;
+    .profile-cover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.3) 100%);
+    }
+    
+    .profile-actions-bar {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      display: flex;
+      gap: 10px;
+    }
+    
+    .profile-action-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      backdrop-filter: blur(5px);
+      transition: background 0.2s;
+    }
+    
+    .profile-action-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    
+    .profile-action-btn.primary {
+      background: #5181b8;
+    }
+    
+    .profile-action-btn.primary:hover {
+      background: #4072a4;
+    }
+    
+    .profile-main {
+      position: relative;
+      padding: 0 20px 20px;
+    }
+    
+    .profile-avatar-wrap {
+      position: absolute;
+      top: -60px;
+      left: 20px;
     }
     
     .profile-avatar {
-      width: 80px;
-      height: 80px;
+      width: 120px;
+      height: 120px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #5181b8, #285689);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 48px;
+      font-weight: 600;
+      border: 4px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    
+    .profile-online {
+      width: 20px;
+      height: 20px;
+      background: #5fba7d;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      margin-top: -15px;
+      margin-left: 85px;
+    }
+    
+    .profile-title {
+      margin-left: 150px;
+      padding-top: 20px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    
+    .profile-name {
+      font-size: 28px;
+      font-weight: 700;
+      color: #000;
+    }
+    
+    .profile-status {
+      font-size: 14px;
+      color: #666;
+      margin-top: 4px;
+    }
+    
+    .profile-edit-btn {
+      background: #f0f0f0;
+      border: none;
+      color: #45678f;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    
+    .profile-edit-btn:hover {
+      background: #e5e5e5;
+    }
+    
+    .profile-nav {
+      display: flex;
+      gap: 2px;
+      margin-top: 20px;
+      border-bottom: 1px solid #e5e5e5;
+      padding-bottom: 0;
+    }
+    
+    .profile-nav-item {
+      padding: 12px 16px;
+      color: #646464;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .profile-nav-item:hover {
+      color: #000;
+    }
+    
+    .profile-nav-item.active {
+      color: #000;
+      border-bottom-color: #5181b8;
+    }
+    
+    .profile-stats {
+      display: flex;
+      margin-top: 20px;
+      gap: 0;
+    }
+    
+    .profile-stat {
+      flex: 1;
+      text-align: center;
+      padding: 15px 10px;
+      border-right: 1px solid #e5e5e5;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .profile-stat:last-child {
+      border-right: none;
+    }
+    
+    .profile-stat:hover {
+      background: #f5f5f5;
+    }
+    
+    .profile-stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #000;
+    }
+    
+    .profile-stat-label {
+      font-size: 13px;
+      color: #666;
+      margin-top: 4px;
+    }
+    
+    .profile-stat.blue .profile-stat-value {
+      color: #5181b8;
+    }
+    
+    .profile-info {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #e5e5e5;
+    }
+    
+    .profile-info-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 0;
+      font-size: 14px;
+      color: #222;
+    }
+    
+    .profile-info-item .icon {
+      width: 24px;
+      color: #7f7f7f;
+      margin-right: 10px;
+    }
+    
+    .profile-info-item a {
+      color: #5181b8;
+      text-decoration: none;
+    }
+    
+    .profile-info-item a:hover {
+      text-decoration: underline;
+    }
+    
+    .profile-info-item.city::before {
+      content: '🏠';
+    }
+    
+    .profile-info-item.birthday::before {
+      content: '🎂';
+    }
+    
+    .profile-info-item.link::before {
+      content: '🔗';
+    }
+    
+    .profile-wall {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e5e5;
+    }
+    
+    .profile-wall-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #000;
+      margin-bottom: 15px;
+    }
+    
+    .profile-wall-post {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+    
+    .profile-wall-post-header {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .profile-wall-post-avatar {
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: linear-gradient(135deg, #5181b8, #285689);
       display: flex;
       align-items: center;
       justify-content: center;
       color: #fff;
-      font-size: 32px;
+      font-size: 14px;
       font-weight: 600;
-      margin: 0 auto 12px;
-      border: 3px solid #fff;
     }
     
-    .profile-name {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    
-    .profile-login {
+    .profile-wall-post-author {
       font-size: 14px;
-      color: #5181b8;
-      margin-bottom: 12px;
+      font-weight: 600;
+      color: #45678f;
     }
     
-    .profile-bio {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 16px;
-      padding: 0 10px;
-    }
-    
-    .profile-stats {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      padding: 12px 0;
-      border-top: 1px solid #eee;
-      border-bottom: 1px solid #eee;
-      margin-bottom: 16px;
-    }
-    
-    .profile-stat {
-      text-align: center;
-    }
-    
-    .profile-stat-value {
-      font-size: 18px;
-      font-weight: 700;
-      color: #000;
-    }
-    
-    .profile-stat-label {
-      font-size: 12px;
+    .profile-wall-post-time {
+      font-size: 13px;
       color: #999;
     }
     
-    .profile-link {
-      display: block;
-      background: #5181b8;
-      color: #fff;
-      text-decoration: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-    
-    .profile-link:hover {
-      background: #285689;
+    .profile-wall-post-text {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #000;
     }
     
     /* Messages */
@@ -623,29 +821,72 @@
   
   <!-- Profile Modal -->
   <div class="profile-modal hidden" id="profileModal" onclick="closeProfile(event)">
-    <div class="profile-card" onclick="event.stopPropagation()">
-      <div class="profile-banner"></div>
-      <div class="profile-content">
-        <div class="profile-avatar" id="profileAvatar">U</div>
-        <div class="profile-name" id="profileName">Загрузка...</div>
-        <div class="profile-login" id="profileLogin">@username</div>
-        <div class="profile-bio" id="profileBio"></div>
+    <div class="profile-page" onclick="event.stopPropagation()">
+      <div class="profile-cover">
+        <div class="profile-actions-bar">
+          <button class="profile-action-btn primary" id="profileMsgBtn" onclick="focusMessage()">✉️ Написать сообщение</button>
+          <button class="profile-action-btn" onclick="window.open(document.getElementById('profileLink').href, '_blank')">🔗 Подписаться</button>
+        </div>
+      </div>
+      
+      <div class="profile-main">
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar" id="profileAvatar">U</div>
+          <div class="profile-online"></div>
+        </div>
+        
+        <div class="profile-title">
+          <div>
+            <div class="profile-name" id="profileName">Загрузка...</div>
+            <div class="profile-status" id="profileStatus">online</div>
+          </div>
+          <button class="profile-edit-btn" onclick="closeProfile()">✕ Закрыть</button>
+        </div>
+        
+        <div class="profile-nav">
+          <div class="profile-nav-item active" onclick="showProfileTab('overview')">Моя страница</div>
+          <div class="profile-nav-item" onclick="showProfileTab('messages')">Сообщения <span id="profileMsgCount">0</span></div>
+          <div class="profile-nav-item" onclick="showProfileTab('friends')">Друзья <span id="profileFriendsCount">0</span></div>
+        </div>
+        
         <div class="profile-stats">
+          <div class="profile-stat" onclick="window.open('https://github.com/' + currentUser + '?tab=repositories', '_blank')">
+            <div class="profile-stat-value" id="profileRepos">0</div>
+            <div class="profile-stat-label">репозиториев</div>
+          </div>
+          <div class="profile-stat blue">
+            <div class="profile-stat-value" id="profileGists">0</div>
+            <div class="profile-stat-label">гистов</div>
+          </div>
           <div class="profile-stat">
             <div class="profile-stat-value" id="profileFollowers">0</div>
-            <div class="profile-stat-label">Подписчики</div>
+            <div class="profile-stat-label">подписчиков</div>
           </div>
           <div class="profile-stat">
             <div class="profile-stat-value" id="profileFollowing">0</div>
-            <div class="profile-stat-label">Подписки</div>
-          </div>
-          <div class="profile-stat">
-            <div class="profile-stat-value" id="profileRepos">0</div>
-            <div class="profile-stat-label">Репозитории</div>
+            <div class="profile-stat-label">подписок</div>
           </div>
         </div>
-        <a class="profile-link" id="profileLink" href="#" target="_blank">Открыть на GitHub</a>
-        <button class="modal-btn" onclick="closeProfile()">Закрыть</button>
+        
+        <div class="profile-info">
+          <div class="profile-info-item city" id="profileCity">
+            <span class="icon"></span>
+            <span>Город: не указан</span>
+          </div>
+          <div class="profile-info-item birthday" id="profileBirthday">
+            <span class="icon"></span>
+            <span>День рождения: не указан</span>
+          </div>
+          <div class="profile-info-item link">
+            <span class="icon"></span>
+            <a id="profileLink" href="#" target="_blank">github.com/@username</a>
+          </div>
+        </div>
+        
+        <div class="profile-wall" id="profileWall">
+          <div class="profile-wall-title">Последние сообщения</div>
+          <div id="profilePosts"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -893,18 +1134,62 @@
       
       document.getElementById('profileAvatar').textContent = profile.login.charAt(0).toUpperCase();
       document.getElementById('profileName').textContent = profile.name || profile.login;
-      document.getElementById('profileLogin').textContent = '@' + profile.login;
-      document.getElementById('profileBio').textContent = profile.bio || '';
+      document.getElementById('profileStatus').textContent = profile.company ? 'Работает в ' + profile.company : 'online';
+      document.getElementById('profileRepos').textContent = profile.public_repos || 0;
       document.getElementById('profileFollowers').textContent = profile.followers || 0;
       document.getElementById('profileFollowing').textContent = profile.following || 0;
-      document.getElementById('profileRepos').textContent = profile.public_repos || 0;
+      document.getElementById('profileLink').textContent = profile.html_url;
       document.getElementById('profileLink').href = profile.html_url;
+      
+      if (profile.location) {
+        document.getElementById('profileCity').querySelector('span:last-child').textContent = 'Город: ' + profile.location;
+      }
+      
+      if (profile.blog) {
+        document.getElementById('profileBirthday').querySelector('span:last-child').textContent = 'Сайт: ' + profile.blog;
+      }
+      
+      const [gists, posts] = await Promise.all([
+        api(`/users/${currentUser}/gists`).catch(() => []),
+        Promise.resolve(allMessages.filter(m => (m.user?.login || '').toLowerCase() === currentUser.toLowerCase()).slice(-5)
+      ]);
+      
+      document.getElementById('profileGists').textContent = gists.length || 0;
+      document.getElementById('profileMsgCount').textContent = allMessages.filter(m => (m.user?.login || '').toLowerCase() === currentUser.toLowerCase()).length;
+      document.getElementById('profileFriendsCount').textContent = profile.followers || 0;
+      
+      const postsEl = document.getElementById('profilePosts');
+      postsEl.innerHTML = '';
+      posts.forEach(msg => {
+        const date = new Date(msg.created_at);
+        const post = document.createElement('div');
+        post.className = 'profile-wall-post';
+        post.innerHTML = `
+          <div class="profile-wall-post-header">
+            <div class="profile-wall-post-avatar">${currentUser.charAt(0).toUpperCase()}</div>
+            <div>
+              <div class="profile-wall-post-author">${currentUser}</div>
+              <div class="profile-wall-post-time">${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+            </div>
+          </div>
+          <div class="profile-wall-post-text">${escapeHtml(msg.body || '')}</div>
+        `;
+        postsEl.appendChild(post);
+      });
+      
+      if (!posts.length) {
+        postsEl.innerHTML = '<div style="color:#999;font-size:14px">Нет сообщений</div>';
+      }
     }
 
-    function closeProfile(e) {
-      if (!e || e.target.id === 'profileModal') {
-        document.getElementById('profileModal').classList.add('hidden');
-      }
+    function showProfileTab(tab) {
+      document.querySelectorAll('.profile-nav-item').forEach(el => el.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
+    function focusMessage() {
+      closeProfile();
+      document.getElementById('messageInput').focus();
     }
   </script>
 </body>
