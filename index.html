@@ -8,24 +8,6 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; }
     
-    .btn {
-      background: #21262d;
-      border: 1px solid #30363d;
-      color: #c9d1d9;
-      padding: 10px 20px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 14px;
-      transition: all 0.2s;
-      display: inline-block;
-    }
-    
-    .btn:hover {
-      background: #30363d;
-      border-color: #58a6ff;
-      transform: translateY(-2px);
-    }
-    
     .main { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
     
     .section-title {
@@ -66,7 +48,7 @@
     }
     
     .card:hover { border-color: #58a6ff; transform: translateY(-2px); }
-    a.card { text-decoration: none; }
+    .card.active { border-color: #58a6ff; background: #21262d; }
     
     .card-icon {
       font-size: 36px;
@@ -79,31 +61,57 @@
       border-radius: 12px;
     }
     
-    .card-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #f0f6fc;
+    .card-title { font-size: 18px; font-weight: 600; color: #f0f6fc; }
+    .card-desc { font-size: 13px; color: #8b949e; margin-top: 4px; }
+    
+    .btn {
+      background: #21262d;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.2s;
+      display: inline-block;
     }
     
-    .card-desc {
-      font-size: 13px;
-      color: #8b949e;
-      margin-top: 4px;
-    }
+    .btn:hover { background: #30363d; border-color: #58a6ff; transform: translateY(-2px); }
     
-    .footer {
+    .content-panel {
+      display: none;
       background: #161b22;
-      padding: 30px 20px;
-      text-align: center;
-      margin-top: 60px;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 40px;
     }
     
+    .content-panel.show { display: block; }
+    
+    .content-panel h2 { color: #f0f6fc; margin-bottom: 16px; font-size: 24px; }
+    .content-panel p { color: #8b949e; line-height: 1.6; margin-bottom: 12px; }
+    .content-panel table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    .content-panel th, .content-panel td { border: 1px solid #30363d; padding: 10px; text-align: left; }
+    .content-panel th { background: #21262d; color: #f0f6fc; }
+    .content-panel td { color: #c9d1d9; }
+    
+    .close-btn {
+      float: right;
+      background: transparent;
+      border: none;
+      color: #8b949e;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 0 10px;
+    }
+    .close-btn:hover { color: #f0f6fc; }
+    
+    .footer { background: #161b22; padding: 30px 20px; text-align: center; margin-top: 60px; }
     .footer p { font-size: 14px; color: #8b949e; }
     
     @media (max-width: 600px) {
-      .logo { font-size: 28px; }
       .grid { grid-template-columns: 1fr; }
-      .links { flex-direction: column; }
     }
   </style>
 </head>
@@ -120,11 +128,14 @@
         <a href="https://www.nexusmods.com/skyrimspecialedition/mods/xxxxx" target="_blank" class="btn">📦 Nexus Mods</a>
       </div>
     </div>
+    
     <div class="section-title">📚 База знаний</div>
     <div class="grid" id="baseGrid"></div>
+    <div id="baseContent"></div>
     
     <div class="section-title">⚔️ Игровые данные</div>
     <div class="grid" id="gameGrid"></div>
+    <div id="gameContent"></div>
   </div>
   
   <div class="footer">
@@ -133,34 +144,164 @@
 
   <script>
     const baseItems = [
-      { icon: '📚', title: 'База', desc: 'Основные данные и механики', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
-      { icon: '🗿', title: 'Расы/Камни', desc: 'Расы и камни судьбы', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
-      { icon: '😇', title: 'Аэдра', desc: 'Боги Аэдра', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
-      { icon: '😈', title: 'Даэдра', desc: 'Принцы Даэдра', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
+      { id: 'base', icon: '📚', title: 'База', desc: 'Основные данные и механики' },
+      { id: 'races', icon: '🗿', title: 'Расы/Камни', desc: 'Расы и камни судьбы' },
+      { id: 'aedra', icon: '😇', title: 'Аэдра', desc: 'Боги Аэдра' },
+      { id: 'daedra', icon: '😈', title: 'Даэдра', desc: 'Принцы Даэдра' },
     ];
     
     const gameItems = [
-      { icon: '🧛🐺', title: 'Проклятые', desc: 'Вампиры и ликантропы', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
-      { icon: '⭐', title: 'Ветки', desc: 'Древа навыков', url: 'https://skytb.ru/calculator/' },
-      { icon: '🧪', title: 'Расходники', desc: 'Зелья, еда, инградиенты', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
-      { icon: '✨', title: 'Зачарования', desc: 'Зачарования предметов', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
-      { icon: '⚔️', title: 'Снаряжение', desc: 'Оружие и броня', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
-      { icon: '💎', title: 'Уники', desc: 'Уникальные предметы', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
-      { icon: '🌈', title: 'Закл/Туумы', desc: 'Заклинания и туумы', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
-      { icon: '👻', title: 'Самоны', desc: 'Самонавы', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
-      { icon: '⛰️', title: 'Данж лист', desc: 'Список подземелий', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
-      { icon: '💰', title: 'Награды', desc: 'Награды за квесты', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
-      { icon: '🥇', title: 'Сложность', desc: 'Система сложности', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
-      { icon: '🏆', title: 'Эффекты', desc: 'Эффекты и таланты', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
+      { id: 'cursed', icon: '🧛🐺', title: 'Проклятые', desc: 'Вампиры и ликантропы' },
+      { id: 'skills', icon: '⭐', title: 'Ветки', desc: 'Древа навыков' },
+      { id: 'consumables', icon: '🧪', title: 'Расходники', desc: 'Зелья, еда, инградиенты' },
+      { id: 'enchant', icon: '✨', title: 'Зачарования', desc: 'Зачарования предметов' },
+      { id: 'gear', icon: '⚔️', title: 'Снаряжение', desc: 'Оружие и броня' },
+      { id: 'unique', icon: '💎', title: 'Уники', desc: 'Уникальные предметы' },
+      { id: 'spells', icon: '🌈', title: 'Закл/Туумы', desc: 'Заклинания и туумы' },
+      { id: 'summons', icon: '👻', title: 'Самоны', desc: 'Самонавы' },
+      { id: 'dungeons', icon: '⛰️', title: 'Данж лист', desc: 'Список подземелий' },
+      { id: 'rewards', icon: '💰', title: 'Награды', desc: 'Награды за квесты' },
+      { id: 'difficulty', icon: '🥇', title: 'Сложность', desc: 'Система сложности' },
+      { id: 'effects', icon: '🏆', title: 'Эффекты', desc: 'Эффекты и таланты' },
     ];
     
-    function renderGrid(items, gridId) {
+    const contentData = {
+      base: {
+        title: '📚 База',
+        content: `<p>Основные данные и механики сборки STB.</p>
+        <p><strong>Опыт:</strong> Навыки растут за убийство врагов, не за использование.</p>
+        <p><strong>Уровень:</strong> Максимальный уровень не ограничен, после 70 замедляется.</p>
+        <p><strong>Сложность:</strong> Мир не подстраивается под игрока.</p>`
+      },
+      races: {
+        title: '🗿 Расы/Камни',
+        content: `<p>Расы и камни судьбы в STB.</p>
+        <p>Расы теперь дают выбор из нескольких бонусов.</p>
+        <p>Камни Рождения и Камни Всесоздателя усиливаются с ростом атрибутов.</p>`
+      },
+      aedra: {
+        title: '😇 Аэдра',
+        content: `<p>Боги Аэдра в сборке STB.</p>
+        <p>Система поклонения: бонусы растут от молитв.</p>
+        <p>Амулеты богов привязаны к системе веры.</p>`
+      },
+      daedra: {
+        title: '😈 Даэдра',
+        content: `<p>Принцы Даэдра и их артефакты.</p>
+        <p>Артефакты Даэдра усиливаются с благосклонностью.</p>
+        <p>Можно трансформировать на алтаре Даэдра.</p>`
+      },
+      cursed: {
+        title: '🧛🐺 Проклятые',
+        content: `<p>Вампиры и ликантропы в STB.</p>
+        <p>Полностью переработанные ветки перков для вампиров и оборотней.</p>
+        <p>Мощные формы с уникальными механиками.</p>`
+      },
+      skills: {
+        title: '⭐ Ветки',
+        content: `<p>Древа навыков в STB.</p>
+        <p>Максимум навыков поднят до 120.</p>
+        <p>Все ветки полностью переработаны.</p>
+        <p><a href="https://skytb.ru/calculator/" target="_blank" class="btn">Открыть калькулятор перков</a></p>`
+      },
+      consumables: {
+        title: '🧪 Расходники',
+        content: `<p>Зелья, еда, инградиенты.</p>
+        <p>Система интоксикации ограничивает зелья.</p>
+        <p>Еда и алкоголь дают бонусы к характеристикам.</p>`
+      },
+      enchant: {
+        title: '✨ Зачарования',
+        content: `<p>Зачарования предметов.</p>
+        <p>Зачарования на оружии усиливаются от урона.</p>
+        <p>Двуручное оружие имеет более сильный эффект.</p>`
+      },
+      gear: {
+        title: '⚔️ Снаряжение',
+        content: `<p>Оружие и броня.</p>
+        <p>Полностью переработанная система крафта.</p>
+        <p>Опыт зависит от ценности материалов.</p>`
+      },
+      unique: {
+        title: '💎 Уники',
+        content: `<p>Уникальные предметы.</p>
+        <p>Артефакты Даэдра значительно усилены.</p>`
+      },
+      spells: {
+        title: '🌈 Закл/Туумы',
+        content: `<p>Заклинания и туумы.</p>
+        <p>Свитки и посохи переработаны.</p>
+        <p>Ауры и призывы резервируют ману.</p>`
+      },
+      summons: {
+        title: '👻 Самоны',
+        content: `<p>Самонавы (призыв существ).</p>
+        <p>Ветка колдовства с "Охотничьими угодьями".</p>`
+      },
+      dungeons: {
+        title: '⛰️ Данж лист',
+        content: `<p>Список подземелий.</p>
+        <p>Все локации переработаны под тировую систему.</p>`
+      },
+      rewards: {
+        title: '💰 Награды',
+        content: `<p>Награды за квесты.</p>
+        <p>Баланс наград переработан.</p>`
+      },
+      difficulty: {
+        title: '🥇 Сложность',
+        content: `<p>Система сложности.</p>
+        <p>Несколько уровней: от новичка до хардкора.</p>
+        <p>Можно настроить под себя.</p>`
+      },
+      effects: {
+        title: '🏆 Эффекты',
+        content: `<p>Эффекты и таланты.</p>
+        <p>Переработанные эффекты предметов.</p>
+        <p>Новые игровые механики.</p>`
+      }
+    };
+    
+    let currentOpen = null;
+    
+    function showContent(id) {
+      const contentDiv = document.getElementById('baseContent');
+      const data = contentData[id];
+      
+      if (!data) return;
+      
+      if (currentOpen === id) {
+        contentDiv.innerHTML = '';
+        currentOpen = null;
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+        return;
+      }
+      
+      contentDiv.innerHTML = `<div class="content-panel show">
+        <button class="close-btn" onclick="closeContent()">×</button>
+        <h2>${data.title}</h2>
+        ${data.content}
+      </div>`;
+      
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+      event.target.closest('.card').classList.add('active');
+      currentOpen = id;
+      
+      contentDiv.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    function closeContent() {
+      document.getElementById('baseContent').innerHTML = '';
+      currentOpen = null;
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+    }
+    
+    function renderGrid(items, gridId, isGame = false) {
       const grid = document.getElementById(gridId);
       items.forEach(item => {
-        const card = document.createElement('a');
+        const card = document.createElement('div');
         card.className = 'card';
-        card.href = item.url;
-        card.target = '_blank';
+        card.onclick = () => showContent(item.id);
         card.innerHTML = `<div class="card-icon">${item.icon}</div><div><div class="card-title">${item.title}</div><div class="card-desc">${item.desc}</div></div>`;
         grid.appendChild(card);
       });
