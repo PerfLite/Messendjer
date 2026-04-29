@@ -110,6 +110,7 @@
     }
     
     .card:hover { border-color: #58a6ff; transform: translateY(-2px); }
+    a.card { text-decoration: none; }
     
     .card-icon {
       font-size: 36px;
@@ -180,32 +181,34 @@
 
   <script>
     const baseItems = [
-      { icon: '📚', title: 'База', desc: 'Основные данные и механики' },
-      { icon: '🗿', title: 'Расы/Камни', desc: 'Расы и камни судьбы' },
-      { icon: '😇', title: 'Аэдра', desc: 'Боги Аэдра' },
-      { icon: '😈', title: 'Даэдра', desc: 'Принцы Даэдра' },
+      { icon: '📚', title: 'База', desc: 'Основные данные и механики', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
+      { icon: '🗿', title: 'Расы/Камни', desc: 'Расы и камни судьбы', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
+      { icon: '😇', title: 'Аэдра', desc: 'Боги Аэдра', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
+      { icon: '😈', title: 'Даэдра', desc: 'Принцы Даэдра', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
     ];
     
     const gameItems = [
-      { icon: '🧛🐺', title: 'Проклятые', desc: 'Вампиры и ликантропы' },
-      { icon: '⭐', title: 'Ветки', desc: 'Древа навыков' },
-      { icon: '🧪', title: 'Расходники', desc: 'Зелья, еда, инградиенты' },
-      { icon: '✨', title: 'Зачарования', desc: 'Зачарования предметов' },
-      { icon: '⚔️', title: 'Снаряжение', desc: 'Оружие и броня' },
-      { icon: '💎', title: 'Уники', desc: 'Уникальные предметы' },
-      { icon: '🌈', title: 'Закл/Туумы', desc: 'Заклинания и туумы' },
-      { icon: '👻', title: 'Самоны', desc: 'Самонавы' },
-      { icon: '⛰️', title: 'Данж лист', desc: 'Список подземелий' },
-      { icon: '💰', title: 'Награды', desc: 'Награды за квесты' },
-      { icon: '🥇', title: 'Сложность', desc: 'Система сложности' },
-      { icon: '🏆', title: 'Эффекты', desc: 'Эффекты и таланты' },
+      { icon: '🧛🐺', title: 'Проклятые', desc: 'Вампиры и ликантропы', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
+      { icon: '⭐', title: 'Ветки', desc: 'Древа навыков', url: 'https://skytb.ru/calculator/' },
+      { icon: '🧪', title: 'Расходники', desc: 'Зелья, еда, инградиенты', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
+      { icon: '✨', title: 'Зачарования', desc: 'Зачарования предметов', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
+      { icon: '⚔️', title: 'Снаряжение', desc: 'Оружие и броня', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
+      { icon: '💎', title: 'Уники', desc: 'Уникальные предметы', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
+      { icon: '🌈', title: 'Закл/Туумы', desc: 'Заклинания и туумы', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
+      { icon: '👻', title: 'Самоны', desc: 'Самонавы', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
+      { icon: '⛰️', title: 'Данж лист', desc: 'Список подземелий', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
+      { icon: '💰', title: 'Награды', desc: 'Награды за квесты', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
+      { icon: '🥇', title: 'Сложность', desc: 'Система сложности', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
+      { icon: '🏆', title: 'Эффекты', desc: 'Эффекты и таланты', url: 'https://docs.google.com/spreadsheets/d/1izHMK7gFbQe1lswiSNlCw1kexnXRdUBF3NFrpDyICJA' },
     ];
     
     function renderGrid(items, gridId) {
       const grid = document.getElementById(gridId);
       items.forEach(item => {
-        const card = document.createElement('div');
+        const card = document.createElement('a');
         card.className = 'card';
+        card.href = item.url;
+        card.target = '_blank';
         card.innerHTML = `<div class="card-icon">${item.icon}</div><div><div class="card-title">${item.title}</div><div class="card-desc">${item.desc}</div></div>`;
         grid.appendChild(card);
       });
